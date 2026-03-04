@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Inland Planning Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--maersk-blue:#0F4C81;--maersk-dark:#0A2E4D;--maersk-light:#1A6CB5;--accent:#00A3E0;--accent-light:#E6F6FC;--bg:#F4F6F8;--card-bg:#FFF;--text:#1A1F2B;--text-muted:#5A6577;--border:#D8DDE4;--success:#0B8043;--success-light:#E8F5E9;--warning:#E8A317;--warning-light:#FFF8E1;--danger:#C62828;--danger-light:#FFEBEE;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.04);--shadow-lg:0 4px 16px rgba(0,0,0,.10),0 8px 32px rgba(0,0,0,.06);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;}
+.header{background:linear-gradient(135deg,var(--maersk-dark) 0%,var(--maersk-blue) 60%,var(--maersk-light) 100%);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15);}
+.header-inner{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.header-brand{display:flex;align-items:center;gap:14px;}
+.header-logo{width:38px;height:38px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;border:1px solid rgba(255,255,255,.1);}
+.header h1{font-size:17px;font-weight:600;letter-spacing:-.3px;}
+.header-subtitle{font-size:11px;opacity:.7;font-weight:400;letter-spacing:.5px;text-transform:uppercase;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.header-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;}
+.header-time{font-size:11px;opacity:.6;font-family:'IBM Plex Mono',monospace;}
+.main{max-width:1200px;margin:0 auto;padding:20px 24px;}
+.form-section{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:16px;border:1px solid var(--border);}
+.form-title{font-size:12px;font-weight:600;color:var(--maersk-blue);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px;}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;align-items:end;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-group label{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;}
+.form-group input,.form-group select{padding:9px 11px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:#FAFBFC;transition:border-color .2s,box-shadow .2s;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,163,224,.12);background:#fff;}
+.form-group input.invalid{border-color:var(--danger);background:var(--danger-light);}
+.btn-plan{padding:9px 24px;background:var(--maersk-blue);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px;white-space:nowrap;}
+.btn-plan:hover{background:var(--maersk-dark);box-shadow:0 2px 8px rgba(15,76,129,.3);transform:translateY(-1px);}
+.region-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-top:2px;min-height:16px;}
+.region-label .region-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+.banner{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.banner-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;}
+.banner-info{background:var(--accent-light);border:1px solid #B3E0F5;color:#0A5275;}
+.banner-info .banner-icon{background:var(--accent);color:#fff;}
+.banner-warning{background:var(--warning-light);border:1px solid #FFE082;color:#7A5D00;}
+.banner-warning .banner-icon{background:var(--warning);color:#fff;}
+.banner-danger{background:var(--danger-light);border:1px solid #FFCDD2;color:var(--danger);}
+.banner-danger .banner-icon{background:var(--danger);color:#fff;}
+.summary-bar{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;box-shadow:var(--shadow);}
+.summary-item{display:flex;flex-direction:column;}.summary-item .s-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:500;}.summary-item .s-value{font-size:13px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+.summary-divider{width:1px;height:28px;background:var(--border);}
+.booking-type-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;}
+.booking-future{background:#E3F2FD;color:#1565C0;}.booking-past{background:#FFF3E0;color:#E65100;}
+.terminal-info{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;box-shadow:var(--shadow);display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+.terminal-info-item{display:flex;align-items:center;gap:8px;}
+.ti-mode{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:4px;}
+.ti-barge{background:#E3F2FD;color:#1565C0;}.ti-rail{background:#F3E5F5;color:#7B1FA2;}
+.ti-name{font-size:12px;font-weight:600;}.ti-code{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
+.ti-no-sched{font-size:10px;color:var(--danger);font-weight:500;}
+.ti-divider{width:1px;height:24px;background:var(--border);}
+.results-section{display:none;}.results-section.visible{display:block;}
+.section-header{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px;}
+.section-header.plannable{color:var(--success);border-color:var(--success);}.section-header.isr-needed{color:var(--warning);border-color:var(--warning);}
+.section-count{font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;color:#fff;}
+.section-header.plannable .section-count{background:var(--success);}.section-header.isr-needed .section-count{background:var(--warning);}
+.schedule-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px;margin-bottom:8px;}
+.schedule-card{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s,transform .15s;}
+.schedule-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);}
+.schedule-card.isr-card{border-color:#FFE082;background:#FFFDF5;}.schedule-card.isr-card:hover{border-color:var(--warning);}
+.card-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:#FAFBFC;}
+.schedule-card.isr-card .card-header{background:#FFF8E1;}
+.card-mode{display:flex;align-items:center;gap:8px;}
+.mode-badge{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
+.mode-barge{background:#E3F2FD;color:#1565C0;}.mode-rail{background:#F3E5F5;color:#7B1FA2;}
+.transit-badge{font-size:10px;color:var(--text-muted);font-weight:500;background:#F0F2F5;padding:2px 7px;border-radius:3px;}
+.rec-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;background:var(--success-light);color:var(--success);text-transform:uppercase;letter-spacing:.3px;}
+.status-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.4px;}
+.status-plannable{background:var(--success-light);color:var(--success);}.status-isr{background:var(--warning-light);color:#B8860B;}
+.card-badges{display:flex;align-items:center;gap:5px;}
+.card-body{padding:14px 16px;}
+.card-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #F0F2F5;}.card-row:last-child{border-bottom:none;}
+.card-label{font-size:11px;color:var(--text-muted);font-weight:500;}
+.card-value{font-size:12px;font-weight:600;color:var(--text);font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:6px;}
+.urgency-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.3px;font-family:'IBM Plex Sans',sans-serif;}
+.urgency-green{background:var(--success-light);color:var(--success);}.urgency-amber{background:var(--warning-light);color:#B8860B;}.urgency-red{background:var(--danger-light);color:var(--danger);}
+.card-value.deadline{color:var(--danger);}.card-value.customs{color:#E65100;}.card-value.delivery{color:var(--success);}.card-value.etd-val{color:var(--maersk-blue);}
+.card-exception{margin:0 16px 8px;padding:5px 10px;background:#FFF3E0;border-radius:4px;font-size:11px;color:#E65100;font-weight:500;}
+.card-isr-note{margin:0 16px 8px;padding:6px 10px;background:var(--warning-light);border:1px solid #FFE082;border-radius:4px;font-size:11px;color:#7A5D00;font-weight:500;}
+.card-transport-instr{margin:0 16px 8px;padding:7px 10px;background:#E8F5E9;border:1px solid #A5D6A7;border-radius:4px;font-size:11px;color:#2E7D32;font-weight:500;}
+.card-transport-instr code{background:#C8E6C9;padding:1px 5px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#1B5E20;}
+.card-footer{padding:8px 16px;background:#FAFBFC;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.schedule-card.isr-card .card-footer{background:#FFF8E1;}
+.card-depot-name{font-size:10px;color:var(--text-muted);font-weight:500;}
+.card-footer-buttons{display:flex;gap:6px;align-items:center;}
+.btn-copy{padding:4px 10px;background:transparent;border:1px solid var(--border);border-radius:4px;font-family:inherit;font-size:10px;font-weight:500;cursor:pointer;color:var(--text-muted);transition:all .2s;}
+.btn-copy:hover{background:var(--maersk-blue);color:#fff;border-color:var(--maersk-blue);}.btn-copy.copied{background:var(--success);color:#fff;border-color:var(--success);}
+.btn-isr{padding:4px 10px;background:var(--warning-light);border:1px solid #FFE082;border-radius:4px;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;color:#7A5D00;transition:all .2s;}
+.btn-isr:hover{background:var(--warning);color:#fff;border-color:var(--warning);}.btn-isr.copied{background:var(--success);color:#fff;border-color:var(--success);}
+.btn-show-more{display:block;width:100%;margin-top:12px;padding:10px;background:#fff;border:1.5px dashed var(--border);border-radius:6px;font-family:inherit;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .2s;}
+.btn-show-more:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+.no-results{text-align:center;padding:36px 20px;color:var(--text-muted);}.no-results-icon{font-size:32px;margin-bottom:10px;opacity:.4;}.no-results h3{font-size:15px;margin-bottom:4px;color:var(--text);}.no-results p{font-size:12px;}
+.quick-ref{margin-top:20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.quick-ref-header{padding:10px 16px;background:#FAFBFC;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--maersk-blue);cursor:pointer;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:.5px;}
+.quick-ref-header:hover{background:#F0F2F5;}
+.quick-ref-body{display:none;padding:12px 16px;overflow-x:auto;}.quick-ref-body.open{display:block;}
+.quick-ref-table{width:100%;border-collapse:collapse;font-size:11px;}
+.quick-ref-table th{text-align:left;padding:5px 8px;background:#F4F6F8;font-weight:600;color:var(--text-muted);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.3px;font-size:10px;}
+.quick-ref-table td{padding:4px 8px;border-bottom:1px solid #F0F2F5;}.quick-ref-table .no-sched{color:var(--danger);font-style:italic;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}.fade-in{animation:fadeIn .25s ease forwards;}
+@media(max-width:640px){.main{padding:12px;}.form-grid{grid-template-columns:1fr 1fr;}.schedule-cards{grid-template-columns:1fr;}.header-badge,.header-time{display:none;}.summary-bar{gap:12px;}.summary-divider{display:none;}.terminal-info{gap:10px;}}
+</style>
+</head>
+<body>
+<div class="header"><div class="header-inner"><div class="header-brand"><div class="header-logo">M</div><div><h1>Import Inland Planning Tool</h1><div class="header-subtitle">CX &amp; Planning &mdash; Germany Inland</div></div></div><div class="header-right"><div class="header-time" id="headerClock"></div><div class="header-badge">Import Direction</div></div></div></div>
+<div class="main">
+  <div class="form-section"><div class="form-title">Shipment Details</div><div class="form-grid">
+    <div class="form-group"><label>Delivery Postcode</label><input type="text" id="inputZip" placeholder="e.g. 47119" maxlength="5" inputmode="numeric"><div class="region-label" id="regionLabel"></div></div>
+    <div class="form-group"><label>Container Size</label><select id="inputSize"><option value="20">20'</option><option value="40" selected>40'</option><option value="45">45'</option></select></div>
+    <div class="form-group"><label>Container Type</label><select id="inputType"><option value="dry">Dry</option><option value="high">High Cube</option><option value="href">Reefer</option></select></div>
+    <div class="form-group"><label>Discharge Port</label><select id="inputPort"><option value="RTM">Rotterdam</option><option value="ANR">Antwerp</option></select></div>
+    <div class="form-group"><label>Vessel ETD Date</label><input type="date" id="inputETDDate"></div>
+    <div class="form-group"><label>Vessel ETD Time (CET)</label><input type="time" id="inputETDTime" value="08:00"></div>
+    <div class="form-group"><label>&nbsp;</label><button class="btn-plan" onclick="runPlanner()">Plan Inland Move</button></div>
+  </div></div>
+  <div id="resultsArea" class="results-section"><div id="summaryBar"></div><div id="bannersArea"></div><div id="terminalInfo"></div><div id="cardsArea"></div></div>
+  <div class="quick-ref"><div class="quick-ref-header" onclick="toggleQuickRef()"><span>Postcode / Terminal Quick Reference</span><span id="qrArrow">&#x25B8;</span></div><div class="quick-ref-body" id="qrBody"></div></div>
+</div>
+<script>
+// ============================================================
+// SCHEDULE DATA - Single ETD/ETA days from schedules_updated.xlsx
+// RULE: No import rail to Frankenbach (DEMNZ01) or Germersheim (DEGRH01)
+//       Both terminals operate BARGE ONLY for imports
+// ============================================================
+var SCHEDULES = [
+  // DEMHG02 Mannheim DPW - Barge
+  {t:"Antwerpen",etd:"Wed",loc:"DEMHG02",eta:"Mon",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Sat",loc:"DEMHG02",eta:"Thur",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Mon",loc:"DEMHG02",eta:"Sat",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Thur",loc:"DEMHG02",eta:"Tue",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Mon",loc:"DEMHG02",eta:"Sat",mod:"Barge",exc:""},
+  // DEGRH01 Germersheim DPW - Barge ONLY (no import rail)
+  {t:"Antwerpen",etd:"Wed",loc:"DEGRH01",eta:"Mon",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Sat",loc:"DEGRH01",eta:"Wed",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Mon",loc:"DEGRH01",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Thur",loc:"DEGRH01",eta:"Tue",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Mon",loc:"DEGRH01",eta:"Fri",mod:"Barge",exc:""},
+  // DEAJHRA Rheinhafen Andernach - Barge
+  {t:"Antwerpen",etd:"Mon",loc:"DEAJHRA",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Thu",loc:"DEAJHRA",eta:"Mon",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Mon",loc:"DEAJHRA",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Thu",loc:"DEAJHRA",eta:"Mon",mod:"Barge",exc:""},
+  // DEG4TG Gustavsburg Contargo - Barge
+  {t:"Antwerpen",etd:"Mon",loc:"DEG4TG",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Fri",loc:"DEG4TG",eta:"Mon",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Mon",loc:"DEG4TG",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Thur",loc:"DEG4TG",eta:"Mon",mod:"Barge",exc:""},
+  // DEDUI01 Hutchison Ports Duisburg - Barge + Rail
+  {t:"Antwerpen",etd:"Mon",loc:"DEDUI01",eta:"Wed",mod:"Barge",exc:"After 12pm"},
+  {t:"Antwerpen",etd:"Fri",loc:"DEDUI01",eta:"Mon",mod:"Barge",exc:"After 12pm"},
+  {t:"Rotterdam",etd:"Thur",loc:"DEDUI01",eta:"Mon",mod:"Barge",exc:"After 12pm"},
+  {t:"Rotterdam",etd:"Fri",loc:"DEDUI01",eta:"Wed",mod:"Barge",exc:"After 12pm"},
+  {t:"Rotterdam",etd:"Mon",loc:"DEDUI01",eta:"Fri",mod:"Barge",exc:"After 12pm"},
+  {t:"Rotterdam",etd:"Wed",loc:"DEDUI01",eta:"Fri",mod:"Rail",exc:"After 12pm"},
+  {t:"Rotterdam",etd:"Thu",loc:"DEDUI01",eta:"Mon",mod:"Rail",exc:"After 12pm"},
+  // DEBNX01 Bonn AZS - Barge
+  {t:"Antwerpen",etd:"Mon",loc:"DEBNX01",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Mon",loc:"DEBNX01",eta:"Fri",mod:"Barge",exc:""},
+  {t:"Antwerpen",etd:"Thur",loc:"DEBNX01",eta:"Tue",mod:"Barge",exc:""},
+  {t:"Rotterdam",etd:"Thur",loc:"DEBNX01",eta:"Tue",mod:"Barge",exc:""},
+  // NUE02 Nuernberg - Rail
+  {t:"Rotterdam",etd:"Tue",loc:"NUE02",eta:"Thu",mod:"Rail",exc:""},
+  {t:"Rotterdam",etd:"Fri",loc:"NUE02",eta:"Sun",mod:"Rail",exc:""}
+  // NOTE: DEMNZ01 Frankenbach - no barge schedule data in schedules_updated.xlsx
+  // Will show "No schedule yet" for Frankenbach zip codes
+];
+
+// ============================================================
+// TERMINAL CONFIG
+// ============================================================
+var TERM_NAMES={
+  'DEDUI01':'Hutchison Ports Duisburg','DEGRH01':'Germersheim DPW',
+  'DEMNZ01':'Frankenbach Mainz','DEG4TG':'Gustavsburg Contargo',
+  'DE9G4TG':'Gustavsburg Contargo','DEBNX01':'Bonn AZS',
+  'DENUE02':'Nuernberg CDN','NUE02':'Nuernberg CDN',
+  'DEMHG02':'Mannheim DPW','DEAJHRA':'Rheinhafen Andernach',
+  'DETREAZ':'AZS Trier','DEDTM01':'CTD Dortmund',
+  'DEMUNU1':'DUSS Muenchen','DELJZU1':'Leipzig Wahren'
+};
+// Terminals with barge/rail schedule data in this tool
+// DEMNZ01 excluded - no schedule data from schedules_updated.xlsx
+var HAS_SCHED=new Set(['DEDUI01','DEGRH01','DEG4TG','DEBNX01','NUE02','DEMHG02','DEAJHRA']);
+var CODE_ALIAS={'DE9G4TG':'DEG4TG','DENUE02':'NUE02'};
+// Terminals where we do NOT handle import rail
+var NO_IMPORT_RAIL=new Set(['DEMNZ01','DEGRH01']);
+
+// ============================================================
+// ZIP MAPPING - Exact from ZIP_codes_and_rail_hubs_-_Benelux.xlsx
+// Rule applied: where Excel rail = DEMNZ01 or DEGRH01, rail set to null
+// (we do not handle import rail to Frankenbach or Germersheim)
+// Frankenbach kept as BARGE terminal where Excel shows it
+// ============================================================
+var ZIP_MAP={
+RTM:{
+'0':{b:'DELJZU1',r:'DELJZU1',t:'Hub Trucker'},
+'1':{b:'DELJZU1',r:'DELJZU1',t:'Hub Trucker'},
+'31':{b:'DEDTM01',r:'DEDTM01',t:'Hub Trucker'},
+'32':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'33':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'34':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'35':{b:'DEMNZ01',r:null,t:'Frankenbach'},
+'36':{b:'DEMNZ01',r:null,t:'Frankenbach'},
+'37':{b:'DEDTM01',r:'DEDTM01',t:'Hub Trucker'},
+'38':{b:'DEDTM01',r:'DEDTM01',t:'Hub Trucker'},
+'39':{b:'DEDTM01',r:'DEDTM01',t:'Hub Trucker'},
+'40':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'41':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'42':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'43':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'44':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'45':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'46':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'47':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'48':{b:'DEDUI01',r:'DEDTM01',t:'HP Duisburg'},
+'49':{b:'DEDUI01',r:'DEDTM01',t:'HP Duisburg'},
+'50':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'51':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'52':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'53':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'54':{b:'DETREAZ',r:'DETREAZ',t:'AZS Trier'},
+'55':{b:'DEMNZ01',r:null,t:'Frankenbach / Gustavsburg'},
+'56':{b:'DEBNX01',r:null,t:'AZS Bonn'},
+'57':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'58':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'59':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'60':{b:'DE9G4TG',r:null,t:'Frankenbach / Gustavsburg'},
+'61':{b:'DE9G4TG',r:null,t:'Frankenbach / Gustavsburg'},
+'63':{b:'DE9G4TG',r:null,t:'Frankenbach / Gustavsburg'},
+'64':{b:'DE9G4TG',r:null,t:'Frankenbach / Gustavsburg'},
+'65':{b:'DE9G4TG',r:null,t:'Frankenbach / Gustavsburg'},
+'66':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'67':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'68':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'69':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'70':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'71':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'72':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'73':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'74':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'75':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'76':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'77':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'78':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'79':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'80':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'81':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'82':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'83':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'84':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'85':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'86':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'87':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'88':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'89':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
+'90':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'91':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'92':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'93':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'94':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'95':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'96':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
+'97':{b:'DEMNZ01',r:'DENUE02',t:'Frankenbach'},
+'98':{b:'DELJZU1',r:'DELJZU1',t:'Hub Trucker'},
+'99':{b:'DELJZU1',r:'DELJZU1',t:'Hub Trucker'}
+},
+ANR:{
+'32':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'33':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'34':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'35':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'36':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'37':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'38':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'39':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'40':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'41':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'42':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'43':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'44':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'45':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'46':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'47':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'48':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'49':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'50':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'51':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'52':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'53':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'54':{b:'DETREAZ',r:'DETREAZ',t:'AZS Trier'},
+'55':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'56':{b:'DEBNX01',r:'DEBNX01',t:'AZS Bonn'},
+'57':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'58':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'59':{b:'DEDUI01',r:'DEDUI01',t:'HP Duisburg'},
+'60':{b:'DE9G4TG',r:'DE9G4TG',t:'Contargo Gustavsburg'},
+'61':{b:'DE9G4TG',r:'DE9G4TG',t:'Contargo Gustavsburg'},
+'63':{b:'DE9G4TG',r:'DE9G4TG',t:'Contargo Gustavsburg'},
+'64':{b:'DE9G4TG',r:'DE9G4TG',t:'Contargo Gustavsburg'},
+'65':{b:'DE9G4TG',r:'DE9G4TG',t:'Contargo Gustavsburg'},
+'66':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'67':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'68':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'69':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'70':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'71':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'72':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'73':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'74':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'75':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'76':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'77':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'78':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'79':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'80':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'81':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'82':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'83':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'84':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'85':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'86':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'87':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'88':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'89':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
+'90':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'91':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'92':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'93':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'94':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'95':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'96':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
+'97':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'}
+}
+};
+
+var POSTCODE_REGIONS=[[10000,14999,"Berlin"],[15000,19999,"Brandenburg / MV"],[20000,29999,"Hamburg / Niedersachsen / Bremen"],[30000,31999,"Hannover Region"],[32000,34999,"Ostwestfalen-Lippe"],[35000,36999,"Mittelhessen / Fulda"],[37000,39999,"Suedniedersachsen / Sachsen-Anhalt"],[40000,47999,"Duesseldorf / Duisburg / NRW-West"],[48000,49999,"Muensterland"],[50000,53999,"Koeln / Bonn"],[54000,56999,"Trier / Koblenz / Eifel"],[57000,59999,"Siegen / Sauerland"],[60000,65999,"Frankfurt / Wiesbaden / Mainz"],[66000,69999,"Saarland / Pfalz / Mannheim"],[70000,76999,"Stuttgart / Karlsruhe"],[77000,79999,"Freiburg / Schwarzwald"],[80000,87999,"Muenchen / Oberbayern"],[88000,89999,"Bodensee / Oberschwaben"],[90000,96999,"Nuernberg / Franken"],[97000,99999,"Wuerzburg / Thueringen"]];
+function getRegionName(z){z=parseInt(z);for(var i=0;i<POSTCODE_REGIONS.length;i++){var r=POSTCODE_REGIONS[i];if(z>=r[0]&&z<=r[1])return r[2];}return null;}
+
+function dayNum(s){s=s.trim().toLowerCase().replace(/[^a-z]/g,'');if(s.indexOf('mon')===0)return 1;if(s.indexOf('tue')===0)return 2;if(s.indexOf('wed')===0)return 3;if(s.indexOf('thu')===0)return 4;if(s.indexOf('fri')===0)return 5;if(s.indexOf('sat')===0)return 6;if(s.indexOf('sun')===0)return 0;return-1;}
+function addDays(d,n){var r=new Date(d);r.setDate(r.getDate()+n);return r;}
+// German public holidays (nationwide) - 2025, 2026, 2027
+var DE_HOLIDAYS=(function(){
+  var h={};
+  function add(y,m,d){h[y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')]=1;}
+  function fixed(y){add(y,1,1);add(y,5,1);add(y,10,3);add(y,12,25);add(y,12,26);}
+  function easter(y,em,ed){// Easter-based moveable holidays
+    var e=new Date(y,em-1,ed);// Easter Sunday
+    var kf=addDays(e,-2);add(y,kf.getMonth()+1,kf.getDate());// Karfreitag
+    var om=addDays(e,1);add(y,om.getMonth()+1,om.getDate());// Ostermontag
+    var hf=addDays(e,39);add(y,hf.getMonth()+1,hf.getDate());// Christi Himmelfahrt
+    var pm=addDays(e,50);add(y,pm.getMonth()+1,pm.getDate());// Pfingstmontag
+  }
+  fixed(2025);easter(2025,4,20);
+  fixed(2026);easter(2026,4,5);
+  fixed(2027);easter(2027,3,28);
+  return h;
+})();
+function isHoliday(d){return DE_HOLIDAYS[fmtDateISO(d)]===1;}
+function isBizDay(d){var dow=d.getDay();return dow!==0&&dow!==6&&!isHoliday(d);}
+function nextBizDay(d){var r=new Date(d);while(!isBizDay(r))r=addDays(r,1);return r;}
+function prevBizDay(d){var r=new Date(d);while(!isBizDay(r))r=addDays(r,-1);return r;}
+var DN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDate(d){return DN[d.getDay()]+', '+d.getDate()+' '+MN[d.getMonth()]+' '+d.getFullYear();}
+function fmtDateShort(d){return d.getDate()+' '+MN[d.getMonth()];}
+function fmtDateISO(d){return d.toISOString().slice(0,10);}
+function nextWD(from,dow){var d=new Date(from);d.setHours(0,0,0,0);var diff=(dow-d.getDay()+7)%7;d.setDate(d.getDate()+diff);return d;}
+function dFromNow(date){var n=new Date();n.setHours(0,0,0,0);var t=new Date(date);t.setHours(0,0,0,0);return Math.ceil((t-n)/864e5);}
+function urgTag(dl){if(dl<0)return'<span class="urgency-tag urgency-red">PASSED</span>';if(dl===0)return'<span class="urgency-tag urgency-red">TODAY</span>';if(dl<=2)return'<span class="urgency-tag urgency-red">'+dl+'D LEFT</span>';if(dl<=5)return'<span class="urgency-tag urgency-amber">'+dl+'D LEFT</span>';return'<span class="urgency-tag urgency-green">'+dl+'D</span>';}
+function trDays(a,b){return Math.round((b-a)/864e5);}
+
+function lookupTerms(zip,port){var z=zip.substring(0,2);var m=ZIP_MAP[port];if(!m)return null;var e=m[z];if(!e)e=m[z.charAt(0)];return e||null;}
+function scCode(c){return CODE_ALIAS[c]||c;}
+function tName(c){return TERM_NAMES[c]||TERM_NAMES[scCode(c)]||c;}
+function hasSc(c){return c&&HAS_SCHED.has(scCode(c));}
+function findScheds(termCode,port,modFilter){var sc=scCode(termCode);var tn=port==='RTM'?'Rotterdam':'Antwerpen';return SCHEDULES.filter(function(s){return s.t===tn&&s.loc===sc&&(!modFilter||s.mod===modFilter);});}
+
+// ============================================================
+// COMPUTE - single ETD/ETA day per schedule
+// ============================================================
+function computeInst(sched,vesselETD,vesselTime,port,isFuture,weeks){
+  var inst=[];var now=new Date();
+  var etdDow=dayNum(sched.etd);var etaDow=dayNum(sched.eta);
+  var searchFrom=isFuture?addDays(vesselETD,1):new Date(now);
+  searchFrom.setHours(0,0,0,0);
+  var vp1=addDays(vesselETD,1);var parts=(vesselTime||'08:00').split(':');
+  vp1.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);
+  for(var w=0;w<weeks;w++){
+    var base=addDays(searchFrom,w*7);var termETD=nextWD(base,etdDow);
+    if(termETD<searchFrom||termETD<=now)continue;
+    var depotArr=nextWD(addDays(termETD,1),etaDow);
+    if(depotArr<=termETD)depotArr=addDays(depotArr,7);
+    var custDel=nextBizDay(addDays(depotArr,1));
+    var orderDL=prevBizDay(addDays(termETD,isFuture?-7:-5));
+    var custDL=null;
+    if(port==='RTM'){var d=termETD.getDay();if(d===0||d===1||d===6){var fri=new Date(termETD);while(fri.getDay()!==5)fri=addDays(fri,-1);fri.setHours(15,0,0,0);custDL=fri;}else{custDL=addDays(termETD,-1);custDL.setHours(12,0,0,0);}}
+    if(port==='RTM'&&custDL){if(isFuture){if(custDL<=vp1||now>=custDL)continue;}else{if(now>=custDL)continue;}}
+    var dsv=Math.round((termETD-vesselETD)/864e5);var plan=now<orderDL;var rec=(dsv>=1&&dsv<=10&&plan);
+    inst.push({mod:sched.mod,etd:termETD,eta:depotArr,custDel:custDel,orderDL:orderDL,custDL:custDL,exc:sched.exc,loc:sched.loc,etdDay:sched.etd,etaDay:sched.eta,plan:plan,rec:rec});
+  }
+  inst.sort(function(a,b){return a.etd-b.etd;});
+  var seen={},out=[];for(var i=0;i<inst.length;i++){var k=fmtDateISO(inst[i].etd)+'-'+inst[i].mod+'-'+inst[i].loc;if(!seen[k]){seen[k]=1;out.push(inst[i]);}}return out;
+}
+
+// ============================================================
+// PLANNER
+// ============================================================
+var curTerms=null,curAll=[],curPort='',curETD=null,curTime='',curIsFuture=true;
+
+function runPlanner(){
+  var zip=document.getElementById('inputZip').value.trim();
+  var size=document.getElementById('inputSize').value;var type=document.getElementById('inputType').value;
+  var port=document.getElementById('inputPort').value;var etdStr=document.getElementById('inputETDDate').value;
+  var etdTime=document.getElementById('inputETDTime').value||'08:00';
+  var zipEl=document.getElementById('inputZip');
+  if(!zip||zip.length<4||zip.length>5||isNaN(zip)){zipEl.classList.add('invalid');return;}
+  zipEl.classList.remove('invalid');
+  if(!etdStr){alert('Please select a Vessel ETD date.');return;}
+  var vesselETD=new Date(etdStr+'T00:00:00');var now=new Date();now.setHours(0,0,0,0);
+  var isFuture=vesselETD>now; // Today = discharged (5-day rule)
+  curPort=port;curETD=vesselETD;curTime=etdTime;curIsFuture=isFuture;
+  var terms=lookupTerms(zip,port);
+  if(!terms){
+    document.getElementById('resultsArea').classList.add('visible');
+    document.getElementById('summaryBar').innerHTML='';document.getElementById('terminalInfo').innerHTML='';
+    showBanners([{type:'danger',text:'No terminal mapping found for postcode <strong>'+zip+'</strong> via '+(port==='RTM'?'Rotterdam':'Antwerp')+'. This postcode may need routing via Bremerhaven or direct trucking. Contact inland operations.'}]);
+    document.getElementById('cardsArea').innerHTML='';return;
+  }
+  curTerms=terms;var all=[];
+  // Barge at barge terminal
+  if(terms.b){var bs=findScheds(terms.b,port,'Barge');for(var i=0;i<bs.length;i++)all=all.concat(computeInst(bs[i],vesselETD,etdTime,port,isFuture,8));}
+  // Rail at rail terminal (skip if NO_IMPORT_RAIL)
+  if(terms.r&&!NO_IMPORT_RAIL.has(scCode(terms.r))){var rs=findScheds(terms.r,port,'Rail');for(var j=0;j<rs.length;j++)all=all.concat(computeInst(rs[j],vesselETD,etdTime,port,isFuture,8));}
+  // Cross-search when barge != rail: also get rail at barge terminal, barge at rail terminal
+  if(terms.b&&terms.r&&scCode(terms.b)!==scCode(terms.r)){
+    if(!NO_IMPORT_RAIL.has(scCode(terms.b))){var xr=findScheds(terms.b,port,'Rail');for(var k=0;k<xr.length;k++)all=all.concat(computeInst(xr[k],vesselETD,etdTime,port,isFuture,8));}
+    var xb=findScheds(terms.r,port,'Barge');for(var l=0;l<xb.length;l++)all=all.concat(computeInst(xb[l],vesselETD,etdTime,port,isFuture,8));
+  }
+  all.sort(function(a,b){return a.etd-b.etd;});
+  var seen={},deduped=[];for(var m=0;m<all.length;m++){var key=fmtDateISO(all[m].etd)+'-'+all[m].mod+'-'+all[m].loc;if(!seen[key]){seen[key]=1;deduped.push(all[m]);}}
+  curAll=deduped;
+  renderSummary(zip,size,type,port,vesselETD,etdTime,isFuture);
+  renderTermInfo(terms,port);renderResults();
+  document.getElementById('resultsArea').classList.add('visible');
+}
+
+function renderSummary(zip,size,type,port,etd,time,isFuture){
+  var r=getRegionName(zip)||'';var pn=port==='RTM'?'Rotterdam':'Antwerp';
+  var tb=isFuture?'<span class="booking-type-badge booking-future">&#x1F6A2; Future Booking</span>':'<span class="booking-type-badge booking-past">&#x1F4E6; Already Discharged</span>';
+  document.getElementById('summaryBar').innerHTML='<div class="summary-bar fade-in"><div class="summary-item"><span class="s-label">Postcode</span><span class="s-value">'+zip+' <span style="font-family:IBM Plex Sans;font-weight:400;font-size:11px;color:var(--text-muted)">'+r+'</span></span></div><div class="summary-divider"></div><div class="summary-item"><span class="s-label">Container</span><span class="s-value">'+size+"' "+type+'</span></div><div class="summary-divider"></div><div class="summary-item"><span class="s-label">Port</span><span class="s-value">'+pn+'</span></div><div class="summary-divider"></div><div class="summary-item"><span class="s-label">Vessel ETD</span><span class="s-value">'+fmtDateShort(etd)+' '+time+'</span></div><div class="summary-divider"></div><div class="summary-item"><span class="s-label">Booking Type</span>'+tb+'</div></div>';
+}
+
+function renderTermInfo(terms,port){
+  var h='<div class="terminal-info fade-in">';
+  if(terms.b){h+='<div class="terminal-info-item"><span class="ti-mode ti-barge">Barge</span><span class="ti-name">'+tName(terms.b)+'</span><span class="ti-code">'+terms.b+'</span>';if(!hasSc(terms.b))h+='<span class="ti-no-sched">No schedule yet</span>';h+='</div>';}
+  if(terms.r&&scCode(terms.r)!==scCode(terms.b||'')&&!NO_IMPORT_RAIL.has(scCode(terms.r))){
+    h+='<div class="ti-divider"></div><div class="terminal-info-item"><span class="ti-mode ti-rail">Rail</span><span class="ti-name">'+tName(terms.r)+'</span><span class="ti-code">'+terms.r+'</span>';
+    if(!hasSc(terms.r))h+='<span class="ti-no-sched">No schedule yet</span>';
+    h+='</div>';
+  }
+  if(!terms.b&&!terms.r){h+='<div class="terminal-info-item"><span style="color:var(--danger);font-weight:600">No terminal assigned</span></div>';}
+  h+='<div class="ti-divider"></div><div class="terminal-info-item"><span style="font-size:10px;color:var(--text-muted)">Truck Vendor:</span><span style="font-size:11px;font-weight:600">'+terms.t+'</span></div></div>';
+  document.getElementById('terminalInfo').innerHTML=h;
+}
+
+function renderResults(){
+  var banners=[];
+  if(curIsFuture){
+    banners.push({type:'info',text:'<strong>Future Booking:</strong> Transport order must be submitted <strong>minimum 7 days before departure</strong>. State the requested departure in the transport order remarks.'});
+    if(curPort==='RTM')banners.push({type:'warning',text:'&#x1F4CB; <strong>Rotterdam:</strong> Customs deadline checked against Vessel ETD + 1. Schedules where customs cannot be met are excluded.'});
+    if(curTerms.b&&!hasSc(curTerms.b))banners.push({type:'danger',text:'<strong>'+tName(curTerms.b)+' ('+curTerms.b+')</strong> &mdash; no schedule data yet. Contact inland operations.'});
+    showBanners(banners);
+    var plan=curAll.filter(function(i){return i.plan;}),isr=curAll.filter(function(i){return!i.plan;});
+    if(!plan.length&&!isr.length){document.getElementById('cardsArea').innerHTML='<div class="no-results fade-in"><div class="no-results-icon">&#x1F4E6;</div><h3>No schedules available</h3><p>No plannable departures found. Contact inland operations.</p></div>';return;}
+    var html='';
+    if(isr.length>0){html+='<div class="section-header isr-needed fade-in"><span>&#x26A1; Nearest Departures &mdash; ISR Required</span><span class="section-count">'+Math.min(isr.length,2)+'</span></div>';html+=renderCards(isr.slice(0,2),true);}
+    if(plan.length>0){html+='<div class="section-header plannable fade-in"'+(isr.length>0?' style="margin-top:20px"':'')+'><span>&#x2713; Targetable Departures &mdash; Book Directly</span><span class="section-count">'+Math.min(plan.length,3)+'</span></div>';html+=renderCards(plan.slice(0,3),false);}
+    document.getElementById('cardsArea').innerHTML=html;
+  } else {
+    banners.push({type:'info',text:'<strong>Already Discharged:</strong> Showing available departures you can plan directly. State the requested departure in the transport order remarks.'});
+    if(curPort==='RTM')banners.push({type:'warning',text:'&#x1F4CB; <strong>Rotterdam:</strong> Customs documents must be cleared before barge/rail departure. Deadline shown per schedule.'});
+    if(curTerms.b&&!hasSc(curTerms.b))banners.push({type:'danger',text:'<strong>'+tName(curTerms.b)+' ('+curTerms.b+')</strong> &mdash; no schedule data yet. Contact inland operations.'});
+    showBanners(banners);
+    var plannable=curAll.filter(function(i){return i.plan;});
+    var show=plannable.length>1?plannable.slice(1):plannable;
+    show=show.slice(0,3);
+    if(!show.length){document.getElementById('cardsArea').innerHTML='<div class="no-results fade-in"><div class="no-results-icon">&#x1F4E6;</div><h3>No schedules available</h3><p>No plannable departures found. Contact inland operations.</p></div>';return;}
+    var html='<div class="section-header plannable fade-in"><span>&#x2713; Available Departures &mdash; Plan Directly</span><span class="section-count">'+show.length+'</span></div>';
+    html+=renderCards(show,false);
+    document.getElementById('cardsArea').innerHTML=html;
+  }
+}
+
+function renderCards(scheds,isISR){
+  if(!scheds.length)return'';var h='<div class="schedule-cards">';
+  for(var i=0;i<scheds.length;i++){var s=scheds[i];
+    var mc=s.mod.toLowerCase()==='barge'?'mode-barge':'mode-rail';
+    var tr=trDays(s.etd,s.eta);var odl=dFromNow(s.orderDL);var cdl=s.custDL?dFromNow(s.custDL):null;
+    var cc=isISR?'schedule-card isr-card':'schedule-card';
+    var sb=isISR?'<span class="status-badge status-isr">ISR NEEDED</span>':'<span class="status-badge status-plannable">PLANNABLE</span>';
+    var rb=s.rec?'<span class="rec-badge">&#x2605; Recommended</span>':'';
+    var dn=tName(s.loc)+' ('+s.loc+')';
+    h+='<div class="'+cc+' fade-in" style="animation-delay:'+i*.08+'s">';
+    h+='<div class="card-header"><div class="card-mode"><span class="mode-badge '+mc+'">'+s.mod+'</span><span class="transit-badge">'+tr+'d transit</span>'+rb+'</div><div class="card-badges">'+sb+'</div></div>';
+    h+='<div class="card-body">';
+    h+='<div class="card-row"><span class="card-label">Terminal ETD</span><span class="card-value etd-val">'+fmtDate(s.etd)+' <span style="font-size:10px;font-family:IBM Plex Sans;color:var(--text-muted);font-weight:400">('+s.etdDay+')</span></span></div>';
+    h+='<div class="card-row"><span class="card-label">Depot Arrival</span><span class="card-value">'+fmtDate(s.eta)+'</span></div>';
+    h+='<div class="card-row"><span class="card-label">Customer Delivery</span><span class="card-value delivery">'+fmtDate(s.custDel)+'</span></div>';
+    h+='<div class="card-row"><span class="card-label">Order Deadline</span><span class="card-value'+(isISR?' deadline':'')+'">'+fmtDate(s.orderDL)+' '+urgTag(odl)+'</span></div>';
+    if(curPort==='RTM'&&s.custDL){var ch=s.custDL.getHours(),cm=String(s.custDL.getMinutes()).padStart(2,'0');h+='<div class="card-row"><span class="card-label">Customs Deadline</span><span class="card-value customs">'+fmtDate(s.custDL)+' '+ch+':'+cm+' '+urgTag(cdl)+'</span></div>';}
+    h+='</div>';
+    var dayN=DN[s.etd.getDay()];var ds=s.etd.getDate()+'/'+String(s.etd.getMonth()+1).padStart(2,'0');
+    if(isISR){h+='<div class="card-isr-note">&#x1F4CB; TO deadline passed &mdash; raise ISR to check availability on this '+s.mod.toLowerCase()+'</div>';}
+    else{h+='<div class="card-transport-instr">&#x1F4DD; Remarks: <code>Please plan on '+s.mod.toLowerCase()+' departure with ETD '+dayN+' '+ds+'</code></div>';}
+    var ib=isISR?'<button class="btn-isr" onclick="copyISR('+i+',this)">&#x1F4E7; Copy ISR Email</button>':'';
+    h+='<div class="card-footer"><span class="card-depot-name">'+dn+'</span><div class="card-footer-buttons">'+ib+'<button class="btn-copy" onclick="copySummary('+i+','+isISR+',this)">Copy Summary</button></div></div></div>';
+  }h+='</div>';return h;
+}
+
+function showBanners(b){document.getElementById('bannersArea').innerHTML=b.map(function(x){return'<div class="banner banner-'+x.type+' fade-in"><div class="banner-icon">'+(x.type==='info'?'i':x.type==='warning'?'!':'&#x2715;')+'</div><div>'+x.text+'</div></div>';}).join('');}
+
+function copyText(text,btn,rl){if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(function(){onC(btn,rl);}).catch(function(){fbCopy(text,btn,rl);});}else{fbCopy(text,btn,rl);}}
+function fbCopy(text,btn,rl){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;left:-9999px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');onC(btn,rl);}catch(e){alert('Copy failed');}document.body.removeChild(ta);}
+function onC(btn,rl){btn.classList.add('copied');btn.textContent='Copied!';setTimeout(function(){btn.classList.remove('copied');btn.textContent=rl;},2200);}
+
+function copySummary(idx,isISR,btn){
+  var list;
+  if(curIsFuture){list=isISR?curAll.filter(function(i){return!i.plan;}).slice(0,2):curAll.filter(function(i){return i.plan;}).slice(0,3);}
+  else{var pl=curAll.filter(function(i){return i.plan;});list=pl.length>1?pl.slice(1,4):pl.slice(0,3);}
+  var s=list[idx];if(!s)return;var pn=curPort==='RTM'?'Rotterdam':'Antwerp';
+  var dayN=DN[s.etd.getDay()];var ds=s.etd.getDate()+'/'+String(s.etd.getMonth()+1).padStart(2,'0');
+  var t='IMPORT INLAND PLAN\nStatus: '+(isISR?'ISR REQUIRED':'PLANNABLE')+(s.rec?' - RECOMMENDED':'')+'\nPort: '+pn+'\nTerminal: '+tName(s.loc)+' ('+s.loc+')\nMode: '+s.mod+' ('+s.etdDay+' schedule)\nTerminal ETD: '+fmtDate(s.etd)+'\nDepot Arrival: '+fmtDate(s.eta)+'\nCustomer Delivery: '+fmtDate(s.custDel)+'\nOrder Deadline: '+fmtDate(s.orderDL)+'\n';
+  if(curPort==='RTM'&&s.custDL){var ch=s.custDL.getHours(),cm=String(s.custDL.getMinutes()).padStart(2,'0');t+='Customs Deadline: '+fmtDate(s.custDL)+' '+ch+':'+cm+'\n';}
+  t+='Truck Vendor: '+curTerms.t+'\n';
+  if(isISR)t+='\nAction: Raise ISR to check availability on this '+s.mod.toLowerCase()+'\n';
+  else t+='\nTransport Order Remarks: Please plan on '+s.mod.toLowerCase()+' departure with ETD '+dayN+' '+ds+'\n';
+  copyText(t,btn,'Copy Summary');
+}
+
+function copyISR(idx,btn){
+  var list=curAll.filter(function(i){return!i.plan;}).slice(0,2);
+  var s=list[idx];if(!s)return;var pn=curPort==='RTM'?'Rotterdam':'Antwerp';
+  var terminal=curPort==='RTM'?'Rotterdam':'Antwerpen';
+  var zip=document.getElementById('inputZip').value.trim();var size=document.getElementById('inputSize').value;
+  var type=document.getElementById('inputType').value;var region=getRegionName(zip)||'';
+  var vd=document.getElementById('inputETDDate').value;var vt=document.getElementById('inputETDTime').value||'08:00';
+  var t='Subject: ISR Request - '+s.mod+' '+fmtDate(s.etd)+' to '+s.loc+' '+tName(s.loc)+'\n\nHi,\n\nCould you please check availability on the below '+s.mod.toLowerCase()+' departure? The transport order deadline has passed.\n\nREQUESTED '+s.mod.toUpperCase()+'\n'+s.mod+' ETD:         '+fmtDate(s.etd)+'\n'+s.mod+' ETA:         '+fmtDate(s.eta)+'\nSchedule:            '+s.etdDay+' departure ('+terminal+')\nCustomer Delivery:   '+fmtDate(s.custDel)+'\n\nROUTE\nDischarge Port:      '+pn+'\nDeparture Terminal:  '+terminal+'\nInland Depot:        '+s.loc+' - '+tName(s.loc)+'\nDelivery Postcode:   '+zip+(region?' ('+region+')':'')+'\n\nCONTAINER DETAILS\nContainer Size:      '+size+"'\nContainer Type:      "+type+'\nVessel ETD:          '+vd+' '+vt+' CET\n\nDEADLINE STATUS\nOrder Deadline:      '+fmtDate(s.orderDL)+' - PASSED\n';
+  if(curPort==='RTM'&&s.custDL){var ch=s.custDL.getHours(),cm=String(s.custDL.getMinutes()).padStart(2,'0');t+='Customs Deadline:    '+fmtDate(s.custDL)+' '+ch+':'+cm+'\n';}
+  t+='\nCould you confirm if there is still space available on this '+s.mod.toLowerCase()+' ('+s.etdDay+' from '+terminal+')?\n\nThank you.\n';
+  copyText(t,btn,'Copy ISR Email');
+}
+
+function toggleQuickRef(){var b=document.getElementById('qrBody'),ar=document.getElementById('qrArrow');var o=b.classList.toggle('open');ar.textContent=o?'\u25BE':'\u25B8';if(o&&!b.innerHTML)renderQR();}
+function renderQR(){
+  var h='<table class="quick-ref-table"><thead><tr><th>Zip</th><th>Region</th><th>RTM Barge</th><th>RTM Rail</th><th>ANR Barge</th><th>ANR Rail</th><th>Truck</th></tr></thead><tbody>';
+  var allP={};for(var p in ZIP_MAP.RTM)allP[p]=1;for(var p2 in ZIP_MAP.ANR)allP[p2]=1;
+  var sorted=Object.keys(allP).sort(function(a,b){return parseInt(a)-parseInt(b);});
+  function fmt(c,isRail){if(!c)return'<span class="no-sched">-</span>';var nr=isRail&&NO_IMPORT_RAIL.has(scCode(c));var hs=hasSc(c);var cls=(!hs||nr)?'class="no-sched"':'';var note=nr?' (no rail)':'';return'<span '+cls+'>'+c+note+'</span>';}
+  for(var i=0;i<sorted.length;i++){var pfx=sorted[i];var region=getRegionName(pfx+'000')||'';var rtm=ZIP_MAP.RTM[pfx];var anr=ZIP_MAP.ANR[pfx];
+    h+='<tr><td>'+pfx+'xxx</td><td>'+region+'</td><td>'+(rtm?fmt(rtm.b,false):'-')+'</td><td>'+(rtm&&rtm.r?fmt(rtm.r,true):'-')+'</td><td>'+(anr?fmt(anr.b,false):'-')+'</td><td>'+(anr&&anr.r?fmt(anr.r,true):'-')+'</td><td>'+(rtm?rtm.t:(anr?anr.t:'-'))+'</td></tr>';}
+  h+='</tbody></table><div style="margin-top:8px;font-size:10px;color:var(--text-muted)"><span class="no-sched" style="color:var(--danger);font-style:italic">Red</span> = no schedule data / no import rail available</div>';
+  document.getElementById('qrBody').innerHTML=h;
+}
+
+document.getElementById('inputZip').addEventListener('input',function(){this.classList.remove('invalid');var r=getRegionName(this.value);document.getElementById('regionLabel').innerHTML=r&&this.value.length>=4?'<span class="region-dot"></span> '+r:'';});
+document.querySelector('.form-section').addEventListener('keydown',function(e){if(e.key==='Enter')runPlanner();});
+function updateClock(){var n=new Date();document.getElementById('headerClock').textContent='CET '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
+updateClock();setInterval(updateClock,30000);
+document.addEventListener('DOMContentLoaded',function(){document.getElementById('inputETDDate').value=new Date().toISOString().slice(0,10);});
+</script>
+</body>
+</html>
