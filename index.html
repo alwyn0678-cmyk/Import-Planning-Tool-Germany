@@ -469,10 +469,7 @@ function renderTermInfo(terms,port){
 function renderResults(){
   var banners=[];
   if(curIsFuture){
-    banners.push({type:'info',text:'<strong>Future Booking:</strong> Transport order must be submitted <strong>minimum 7 days before departure</strong>. State the requested departure in the transport order remarks.'});
-    if(curPort==='RTM')banners.push({type:'warning',text:'&#x1F4CB; <strong>Rotterdam:</strong> Customs deadline checked against Vessel ETD + 1. Schedules where customs cannot be met are excluded.'});
-    if(curTerms.b&&!hasSc(curTerms.b))banners.push({type:'danger',text:'<strong>'+tName(curTerms.b)+' ('+curTerms.b+')</strong> &mdash; no schedule data yet. Contact inland operations.'});
-    showBanners(banners);
+    showBanners([]);
     var plan=curAll.filter(function(i){return i.plan;}),isr=curAll.filter(function(i){return!i.plan;});
     if(!plan.length&&!isr.length){document.getElementById('cardsArea').innerHTML='<div class="no-results fade-in"><div class="no-results-icon">&#x1F4E6;</div><h3>No schedules available</h3><p>No plannable departures found. Contact inland operations.</p></div>';return;}
     var html='';
