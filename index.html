@@ -19,9 +19,9 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .header-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;}
 .header-time{font-size:11px;opacity:.6;font-family:'IBM Plex Mono',monospace;}
 .main{max-width:1200px;margin:0 auto;padding:20px 24px;}
-.form-section{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:16px;border:1px solid var(--border);}
+.form-section{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px 34px;margin-bottom:16px;border:1px solid var(--border);}
 .form-title{font-size:12px;font-weight:600;color:var(--maersk-blue);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px;}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;align-items:end;}
+.form-grid{display:grid;grid-template-columns:140px 120px 120px 130px 155px 140px auto;gap:12px;align-items:end;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
 .form-group label{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;}
 .form-group input,.form-group select{padding:9px 11px;border:1.5px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;color:var(--text);background:#FAFBFC;transition:border-color .2s,box-shadow .2s;}
@@ -29,7 +29,7 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .form-group input.invalid{border-color:var(--danger);background:var(--danger-light);}
 .btn-plan{padding:9px 24px;background:var(--maersk-blue);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px;white-space:nowrap;}
 .btn-plan:hover{background:var(--maersk-dark);box-shadow:0 2px 8px rgba(15,76,129,.3);transform:translateY(-1px);}
-.region-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-top:2px;min-height:16px;}
+.region-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-top:2px;min-height:16px;position:absolute;bottom:-18px;left:0;}
 .region-label .region-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
 .banner{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
 .banner-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;}
@@ -56,20 +56,24 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .section-header.plannable{color:var(--success);border-color:var(--success);}.section-header.isr-needed{color:var(--warning);border-color:var(--warning);}
 .section-count{font-size:10px;font-weight:600;padding:1px 7px;border-radius:8px;color:#fff;}
 .section-header.plannable .section-count{background:var(--success);}.section-header.isr-needed .section-count{background:var(--warning);}
-.schedule-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:14px;margin-bottom:8px;}
+.schedule-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:8px;}
 .schedule-card{background:var(--card-bg);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:box-shadow .2s,transform .15s;}
 .schedule-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);}
 .schedule-card.isr-card{border-color:#FFE082;background:#FFFDF5;}.schedule-card.isr-card:hover{border-color:var(--warning);}
-.card-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:#FAFBFC;}
+.card-header{padding:10px 16px;border-bottom:1px solid var(--border);background:#FAFBFC;}
 .schedule-card.isr-card .card-header{background:#FFF8E1;}
-.card-mode{display:flex;align-items:center;gap:8px;}
+.card-header-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-header-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.card-header-depot{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-header-code{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;flex-shrink:0;}
+.card-header-meta{display:flex;align-items:center;gap:6px;margin-top:6px;}
 .mode-badge{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
 .mode-barge{background:#E3F2FD;color:#1565C0;}.mode-rail{background:#F3E5F5;color:#7B1FA2;}
 .transit-badge{font-size:10px;color:var(--text-muted);font-weight:500;background:#F0F2F5;padding:2px 7px;border-radius:3px;}
 .rec-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;background:var(--success-light);color:var(--success);text-transform:uppercase;letter-spacing:.3px;}
 .status-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.4px;}
 .status-plannable{background:var(--success-light);color:var(--success);}.status-isr{background:var(--warning-light);color:#B8860B;}
-.card-badges{display:flex;align-items:center;gap:5px;}
+.card-badges{display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .card-body{padding:14px 16px;}
 .card-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #F0F2F5;}.card-row:last-child{border-bottom:none;}
 .card-label{font-size:11px;color:var(--text-muted);font-weight:500;}
@@ -77,7 +81,6 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .urgency-tag{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.3px;font-family:'IBM Plex Sans',sans-serif;}
 .urgency-green{background:var(--success-light);color:var(--success);}.urgency-amber{background:var(--warning-light);color:#B8860B;}.urgency-red{background:var(--danger-light);color:var(--danger);}
 .card-value.deadline{color:var(--danger);}.card-value.customs{color:#E65100;}.card-value.delivery{color:var(--success);}.card-value.etd-val{color:var(--maersk-blue);}
-.card-exception{margin:0 16px 8px;padding:5px 10px;background:#FFF3E0;border-radius:4px;font-size:11px;color:#E65100;font-weight:500;}
 .card-isr-note{margin:0 16px 8px;padding:6px 10px;background:var(--warning-light);border:1px solid #FFE082;border-radius:4px;font-size:11px;color:#7A5D00;font-weight:500;}
 .card-transport-instr{margin:0 16px 8px;padding:7px 10px;background:#E8F5E9;border:1px solid #A5D6A7;border-radius:4px;font-size:11px;color:#2E7D32;font-weight:500;}
 .card-transport-instr code{background:#C8E6C9;padding:1px 5px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#1B5E20;}
@@ -89,8 +92,6 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .btn-copy:hover{background:var(--maersk-blue);color:#fff;border-color:var(--maersk-blue);}.btn-copy.copied{background:var(--success);color:#fff;border-color:var(--success);}
 .btn-isr{padding:4px 10px;background:var(--warning-light);border:1px solid #FFE082;border-radius:4px;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;color:#7A5D00;transition:all .2s;}
 .btn-isr:hover{background:var(--warning);color:#fff;border-color:var(--warning);}.btn-isr.copied{background:var(--success);color:#fff;border-color:var(--success);}
-.btn-show-more{display:block;width:100%;margin-top:12px;padding:10px;background:#fff;border:1.5px dashed var(--border);border-radius:6px;font-family:inherit;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .2s;}
-.btn-show-more:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
 .no-results{text-align:center;padding:36px 20px;color:var(--text-muted);}.no-results-icon{font-size:32px;margin-bottom:10px;opacity:.4;}.no-results h3{font-size:15px;margin-bottom:4px;color:var(--text);}.no-results p{font-size:12px;}
 .quick-ref{margin-top:20px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .quick-ref-header{padding:10px 16px;background:#FAFBFC;border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--maersk-blue);cursor:pointer;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:.5px;}
@@ -100,6 +101,7 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .quick-ref-table th{text-align:left;padding:5px 8px;background:#F4F6F8;font-weight:600;color:var(--text-muted);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.3px;font-size:10px;}
 .quick-ref-table td{padding:4px 8px;border-bottom:1px solid #F0F2F5;}.quick-ref-table .no-sched{color:var(--danger);font-style:italic;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}.fade-in{animation:fadeIn .25s ease forwards;}
+@media(max-width:960px){.form-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}}
 @media(max-width:640px){.main{padding:12px;}.form-grid{grid-template-columns:1fr 1fr;}.schedule-cards{grid-template-columns:1fr;}.header-badge,.header-time{display:none;}.summary-bar{gap:12px;}.summary-divider{display:none;}.terminal-info{gap:10px;}}
 </style>
 </head>
@@ -107,7 +109,7 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 <div class="header"><div class="header-inner"><div class="header-brand"><div class="header-logo">M</div><div><h1>Import Inland Planning Tool</h1><div class="header-subtitle">CX &amp; Planning &mdash; Germany Inland</div></div></div><div class="header-right"><div class="header-time" id="headerClock"></div><div class="header-badge">Import Direction</div></div></div></div>
 <div class="main">
   <div class="form-section"><div class="form-title">Shipment Details</div><div class="form-grid">
-    <div class="form-group"><label>Delivery Postcode</label><input type="text" id="inputZip" placeholder="e.g. 47119" maxlength="5" inputmode="numeric"><div class="region-label" id="regionLabel"></div></div>
+    <div class="form-group" style="position:relative"><label>Delivery Postcode</label><input type="text" id="inputZip" placeholder="e.g. 47119" maxlength="5" inputmode="numeric"><div class="region-label" id="regionLabel"></div></div>
     <div class="form-group"><label>Container Size</label><select id="inputSize"><option value="20">20'</option><option value="40" selected>40'</option><option value="45">45'</option></select></div>
     <div class="form-group"><label>Container Type</label><select id="inputType"><option value="dry">Dry</option><option value="high">High Cube</option><option value="href">Reefer</option></select></div>
     <div class="form-group"><label>Discharge Port</label><select id="inputPort"><option value="RTM">Rotterdam</option><option value="ANR">Antwerp</option></select></div>
@@ -254,14 +256,14 @@ RTM:{
 '87':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
 '88':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
 '89':{b:'DEGRH01',r:'DEMUNU1',t:'DP World Germersheim'},
-'90':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'91':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'92':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'93':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'94':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'95':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'96':{b:'DEMNZ01',r:'DENUE02',t:'HPE Nuernberg'},
-'97':{b:'DEMNZ01',r:'DENUE02',t:'Frankenbach'},
+'90':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'91':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'92':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'93':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'94':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'95':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'96':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'97':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
 '98':{b:'DELJZU1',r:'DELJZU1',t:'Hub Trucker'},
 '99':{b:'DELJZU1',r:'DELJZU1',t:'Hub Trucker'}
 },
@@ -323,14 +325,14 @@ ANR:{
 '87':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
 '88':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
 '89':{b:'DEGRH01',r:null,t:'DP World Germersheim'},
-'90':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'91':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'92':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'93':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'94':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'95':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'96':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'},
-'97':{b:'DEMNZ01',r:null,t:'Frankenbach Mainz'}
+'90':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'91':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'92':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'93':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'94':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'95':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'96':{b:null,r:'DENUE02',t:'HPE Nuernberg'},
+'97':{b:null,r:'DENUE02',t:'HPE Nuernberg'}
 }
 };
 
@@ -478,10 +480,7 @@ function renderResults(){
     if(plan.length>0){html+='<div class="section-header plannable fade-in"'+(isr.length>0?' style="margin-top:20px"':'')+'><span>&#x2713; Targetable Departures &mdash; Book Directly</span><span class="section-count">'+Math.min(plan.length,3)+'</span></div>';html+=renderCards(plan.slice(0,3),false);}
     document.getElementById('cardsArea').innerHTML=html;
   } else {
-    banners.push({type:'info',text:'<strong>Already Discharged:</strong> Showing available departures you can plan directly. State the requested departure in the transport order remarks.'});
-    if(curPort==='RTM')banners.push({type:'warning',text:'&#x1F4CB; <strong>Rotterdam:</strong> Customs documents must be cleared before barge/rail departure. Deadline shown per schedule.'});
-    if(curTerms.b&&!hasSc(curTerms.b))banners.push({type:'danger',text:'<strong>'+tName(curTerms.b)+' ('+curTerms.b+')</strong> &mdash; no schedule data yet. Contact inland operations.'});
-    showBanners(banners);
+    showBanners([]);
     var plannable=curAll.filter(function(i){return i.plan;});
     var show=plannable.length>1?plannable.slice(1):plannable;
     show=show.slice(0,3);
@@ -500,9 +499,8 @@ function renderCards(scheds,isISR){
     var cc=isISR?'schedule-card isr-card':'schedule-card';
     var sb=isISR?'<span class="status-badge status-isr">ISR NEEDED</span>':'<span class="status-badge status-plannable">PLANNABLE</span>';
     var rb=s.rec?'<span class="rec-badge">&#x2605; Recommended</span>':'';
-    var dn=tName(s.loc)+' ('+s.loc+')';
     h+='<div class="'+cc+' fade-in" style="animation-delay:'+i*.08+'s">';
-    h+='<div class="card-header"><div class="card-mode"><span class="mode-badge '+mc+'">'+s.mod+'</span><span class="transit-badge">'+tr+'d transit</span>'+rb+'</div><div class="card-badges">'+sb+'</div></div>';
+    h+='<div class="card-header"><div class="card-header-top"><div class="card-header-left"><span class="mode-badge '+mc+'">'+s.mod+'</span><span class="card-header-depot">'+tName(s.loc)+'</span><span class="card-header-code">'+s.loc+'</span></div><div class="card-badges">'+sb+'</div></div><div class="card-header-meta"><span class="transit-badge">'+tr+'d transit</span>'+rb+'</div></div>';
     h+='<div class="card-body">';
     h+='<div class="card-row"><span class="card-label">Terminal ETD</span><span class="card-value etd-val">'+fmtDate(s.etd)+' <span style="font-size:10px;font-family:IBM Plex Sans;color:var(--text-muted);font-weight:400">('+s.etdDay+')</span></span></div>';
     h+='<div class="card-row"><span class="card-label">Depot Arrival</span><span class="card-value">'+fmtDate(s.eta)+'</span></div>';
@@ -514,7 +512,7 @@ function renderCards(scheds,isISR){
     if(isISR){h+='<div class="card-isr-note">&#x1F4CB; TO deadline passed &mdash; raise ISR to check availability on this '+s.mod.toLowerCase()+'</div>';}
     else{h+='<div class="card-transport-instr">&#x1F4DD; Remarks: <code>Please plan on '+s.mod.toLowerCase()+' departure with ETD '+dayN+' '+ds+'</code></div>';}
     var ib=isISR?'<button class="btn-isr" onclick="copyISR('+i+',this)">&#x1F4E7; Copy ISR Email</button>':'';
-    h+='<div class="card-footer"><span class="card-depot-name">'+dn+'</span><div class="card-footer-buttons">'+ib+'<button class="btn-copy" onclick="copySummary('+i+','+isISR+',this)">Copy Summary</button></div></div></div>';
+    h+='<div class="card-footer"><span class="card-depot-name">Truck Vendor: '+curTerms.t+'</span><div class="card-footer-buttons">'+ib+'<button class="btn-copy" onclick="copySummary('+i+','+isISR+',this)">Copy Summary</button></div></div></div>';
   }h+='</div>';return h;
 }
 
