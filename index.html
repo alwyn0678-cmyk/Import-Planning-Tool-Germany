@@ -19,7 +19,7 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .header-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;}
 .header-time{font-size:11px;opacity:.6;font-family:'IBM Plex Mono',monospace;}
 .main{max-width:1200px;margin:0 auto;padding:20px 24px;}
-.form-section{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px 34px;margin-bottom:16px;border:1px solid var(--border);}
+.form-section{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:16px;border:1px solid var(--border);}
 .form-title{font-size:12px;font-weight:600;color:var(--maersk-blue);margin-bottom:14px;text-transform:uppercase;letter-spacing:.8px;}
 .form-grid{display:grid;grid-template-columns:140px 120px 120px 130px 155px 140px auto;gap:12px;align-items:end;}
 .form-group{display:flex;flex-direction:column;gap:4px;}
@@ -29,8 +29,6 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 .form-group input.invalid{border-color:var(--danger);background:var(--danger-light);}
 .btn-plan{padding:9px 24px;background:var(--maersk-blue);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px;white-space:nowrap;}
 .btn-plan:hover{background:var(--maersk-dark);box-shadow:0 2px 8px rgba(15,76,129,.3);transform:translateY(-1px);}
-.region-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-top:2px;min-height:16px;position:absolute;bottom:-18px;left:0;}
-.region-label .region-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
 .banner{padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
 .banner-icon{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;}
 .banner-info{background:var(--accent-light);border:1px solid #B3E0F5;color:#0A5275;}
@@ -109,7 +107,7 @@ body{font-family:'IBM Plex Sans',-apple-system,sans-serif;background:var(--bg);c
 <div class="header"><div class="header-inner"><div class="header-brand"><div class="header-logo">M</div><div><h1>Import Inland Planning Tool</h1><div class="header-subtitle">CX &amp; Planning &mdash; Germany Inland</div></div></div><div class="header-right"><div class="header-time" id="headerClock"></div><div class="header-badge">Import Direction</div></div></div></div>
 <div class="main">
   <div class="form-section"><div class="form-title">Shipment Details</div><div class="form-grid">
-    <div class="form-group" style="position:relative"><label>Delivery Postcode</label><input type="text" id="inputZip" placeholder="e.g. 47119" maxlength="5" inputmode="numeric"><div class="region-label" id="regionLabel"></div></div>
+    <div class="form-group"><label>Delivery Postcode</label><input type="text" id="inputZip" placeholder="e.g. 47119" maxlength="5" inputmode="numeric"></div>
     <div class="form-group"><label>Container Size</label><select id="inputSize"><option value="20">20'</option><option value="40" selected>40'</option><option value="45">45'</option></select></div>
     <div class="form-group"><label>Container Type</label><select id="inputType"><option value="dry">Dry</option><option value="high">High Cube</option><option value="href">Reefer</option></select></div>
     <div class="form-group"><label>Discharge Port</label><select id="inputPort"><option value="RTM">Rotterdam</option><option value="ANR">Antwerp</option></select></div>
@@ -501,7 +499,7 @@ function renderCards(scheds,isISR){
     h+='<div class="card-body">';
     h+='<div class="card-row"><span class="card-label">Terminal ETD</span><span class="card-value etd-val">'+fmtDate(s.etd)+' <span style="font-size:10px;font-family:IBM Plex Sans;color:var(--text-muted);font-weight:400">('+s.etdDay+')</span></span></div>';
     h+='<div class="card-row"><span class="card-label">Depot Arrival</span><span class="card-value">'+fmtDate(s.eta)+'</span></div>';
-    h+='<div class="card-row"><span class="card-label">Customer Delivery</span><span class="card-value delivery">'+fmtDate(s.custDel)+'</span></div>';
+    h+='<div class="card-row"><span class="card-label">Customer Delivery</span><span class="card-value delivery">'+fmtDate(s.custDel)+(s.loc==='DEDUI01'?' <span style="font-size:10px;color:#E65100;font-family:IBM Plex Sans;font-weight:600">after 12:00</span>':'')+'</span></div>';
     h+='<div class="card-row"><span class="card-label">Order Deadline</span><span class="card-value'+(isISR?' deadline':'')+'">'+fmtDate(s.orderDL)+' '+urgTag(odl)+'</span></div>';
     if(curPort==='RTM'&&s.custDL){var ch=s.custDL.getHours(),cm=String(s.custDL.getMinutes()).padStart(2,'0');h+='<div class="card-row"><span class="card-label">Customs Deadline</span><span class="card-value customs">'+fmtDate(s.custDL)+' '+ch+':'+cm+' '+urgTag(cdl)+'</span></div>';}
     h+='</div>';
@@ -525,7 +523,7 @@ function copySummary(idx,isISR,btn){
   else{var pl=curAll.filter(function(i){return i.plan;});list=pl.length>1?pl.slice(1,4):pl.slice(0,3);}
   var s=list[idx];if(!s)return;var pn=curPort==='RTM'?'Rotterdam':'Antwerp';
   var dayN=DN[s.etd.getDay()];var ds=s.etd.getDate()+'/'+String(s.etd.getMonth()+1).padStart(2,'0');
-  var t='IMPORT INLAND PLAN\nStatus: '+(isISR?'ISR REQUIRED':'PLANNABLE')+(s.rec?' - RECOMMENDED':'')+'\nPort: '+pn+'\nTerminal: '+tName(s.loc)+' ('+s.loc+')\nMode: '+s.mod+' ('+s.etdDay+' schedule)\nTerminal ETD: '+fmtDate(s.etd)+'\nDepot Arrival: '+fmtDate(s.eta)+'\nCustomer Delivery: '+fmtDate(s.custDel)+'\nOrder Deadline: '+fmtDate(s.orderDL)+'\n';
+  var t='IMPORT INLAND PLAN\nStatus: '+(isISR?'ISR REQUIRED':'PLANNABLE')+(s.rec?' - RECOMMENDED':'')+'\nPort: '+pn+'\nTerminal: '+tName(s.loc)+' ('+s.loc+')\nMode: '+s.mod+' ('+s.etdDay+' schedule)\nTerminal ETD: '+fmtDate(s.etd)+'\nDepot Arrival: '+fmtDate(s.eta)+'\nCustomer Delivery: '+fmtDate(s.custDel)+(s.loc==='DEDUI01'?' (after 12:00)':'')+'\nOrder Deadline: '+fmtDate(s.orderDL)+'\n';
   if(curPort==='RTM'&&s.custDL){var ch=s.custDL.getHours(),cm=String(s.custDL.getMinutes()).padStart(2,'0');t+='Customs Deadline: '+fmtDate(s.custDL)+' '+ch+':'+cm+'\n';}
   t+='Truck Vendor: '+curTerms.t+'\n';
   if(isISR)t+='\nAction: Raise ISR to check availability on this '+s.mod.toLowerCase()+'\n';
@@ -540,7 +538,7 @@ function copyISR(idx,btn){
   var zip=document.getElementById('inputZip').value.trim();var size=document.getElementById('inputSize').value;
   var type=document.getElementById('inputType').value;var region=getRegionName(zip)||'';
   var vd=document.getElementById('inputETDDate').value;var vt=document.getElementById('inputETDTime').value||'08:00';
-  var t='Subject: ISR Request - '+s.mod+' '+fmtDate(s.etd)+' to '+s.loc+' '+tName(s.loc)+'\n\nHi,\n\nCould you please check availability on the below '+s.mod.toLowerCase()+' departure? The transport order deadline has passed.\n\nREQUESTED '+s.mod.toUpperCase()+'\n'+s.mod+' ETD:         '+fmtDate(s.etd)+'\n'+s.mod+' ETA:         '+fmtDate(s.eta)+'\nSchedule:            '+s.etdDay+' departure ('+terminal+')\nCustomer Delivery:   '+fmtDate(s.custDel)+'\n\nROUTE\nDischarge Port:      '+pn+'\nDeparture Terminal:  '+terminal+'\nInland Depot:        '+s.loc+' - '+tName(s.loc)+'\nDelivery Postcode:   '+zip+(region?' ('+region+')':'')+'\n\nCONTAINER DETAILS\nContainer Size:      '+size+"'\nContainer Type:      "+type+'\nVessel ETD:          '+vd+' '+vt+' CET\n\nDEADLINE STATUS\nOrder Deadline:      '+fmtDate(s.orderDL)+' - PASSED\n';
+  var t='Subject: ISR Request - '+s.mod+' '+fmtDate(s.etd)+' to '+s.loc+' '+tName(s.loc)+'\n\nHi,\n\nCould you please check availability on the below '+s.mod.toLowerCase()+' departure? The transport order deadline has passed.\n\nREQUESTED '+s.mod.toUpperCase()+'\n'+s.mod+' ETD:         '+fmtDate(s.etd)+'\n'+s.mod+' ETA:         '+fmtDate(s.eta)+'\nSchedule:            '+s.etdDay+' departure ('+terminal+')\nCustomer Delivery:   '+fmtDate(s.custDel)+(s.loc==='DEDUI01'?' (after 12:00)':'')+'\n\nROUTE\nDischarge Port:      '+pn+'\nDeparture Terminal:  '+terminal+'\nInland Depot:        '+s.loc+' - '+tName(s.loc)+'\nDelivery Postcode:   '+zip+(region?' ('+region+')':'')+'\n\nCONTAINER DETAILS\nContainer Size:      '+size+"'\nContainer Type:      "+type+'\nVessel ETD:          '+vd+' '+vt+' CET\n\nDEADLINE STATUS\nOrder Deadline:      '+fmtDate(s.orderDL)+' - PASSED\n';
   if(curPort==='RTM'&&s.custDL){var ch=s.custDL.getHours(),cm=String(s.custDL.getMinutes()).padStart(2,'0');t+='Customs Deadline:    '+fmtDate(s.custDL)+' '+ch+':'+cm+'\n';}
   t+='\nCould you confirm if there is still space available on this '+s.mod.toLowerCase()+' ('+s.etdDay+' from '+terminal+')?\n\nThank you.\n';
   copyText(t,btn,'Copy ISR Email');
@@ -558,7 +556,7 @@ function renderQR(){
   document.getElementById('qrBody').innerHTML=h;
 }
 
-document.getElementById('inputZip').addEventListener('input',function(){this.classList.remove('invalid');var r=getRegionName(this.value);document.getElementById('regionLabel').innerHTML=r&&this.value.length>=4?'<span class="region-dot"></span> '+r:'';});
+document.getElementById('inputZip').addEventListener('input',function(){this.classList.remove('invalid');});
 document.querySelector('.form-section').addEventListener('keydown',function(e){if(e.key==='Enter')runPlanner();});
 function updateClock(){var n=new Date();document.getElementById('headerClock').textContent='CET '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');}
 updateClock();setInterval(updateClock,30000);
